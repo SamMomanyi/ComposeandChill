@@ -42,13 +42,6 @@ It demonstrates a clean architecture, scalable codebase, and smooth user experie
 - Navigation Compose  
 - TV Foundation  
 
----
-## 🔗 Demo Video
-
-📺 **Watch demo on YouTube**
-
-[![Streampose Demo](https://img.youtube.com/vi/cwOJU2mkdCQ/0.jpg)](https://www.youtube.com/watch?v=cwOJU2mkdCQ)  
-➡️ *Click the thumbnail to play demo video*
 
 ---
 ## 📸 Screenshots
@@ -65,7 +58,7 @@ It demonstrates a clean architecture, scalable codebase, and smooth user experie
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/Dinesh2510/Streampose-Jetpack-Compose-Android-TV-Streaming-App.git
+git clone https://github.com/SamMomanyi/ComposeandChill.git
 cd Streampose-Jetpack-Compose-Android-TV-Streaming-App
 ```
 
@@ -98,13 +91,12 @@ com.pixeldev.composetv/
 
 ---
 
-## 🤝 Contributing
-We welcome contributions! To contribute:
+
 
 1. **Fork** the repository.
 2. **Clone** your fork:
    ```bash
-   git clone https://github.com/Dinesh2510/Streampose-Jetpack-Compose-Android-TV-Streaming-App.git
+   git clone https://github.com/SamMomanyi/Streampose-Jetpack-Compose-Android-TV-Streaming-App.git
    ```
 3. **Create** a feature branch: `git checkout -b feature/your-feature`.
 4. **Commit** your changes: `git commit -m "feat: description"`.
@@ -119,7 +111,7 @@ This project is licensed under the **MIT License**. See the `LICENSE` file for d
 ---
 
 ## 👨‍💻 Author
-* GitHub: [@Dinesh2510](https://github.com/Dinesh2510)
+* GitHub: [@SamMomanyi](https://github.com/Dinesh2510)
 
 ---
 
