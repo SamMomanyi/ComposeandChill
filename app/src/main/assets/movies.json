@@ -1,0 +1,56 @@
+[
+  {
+    "id": 1,
+    "title": "Echoes of Tomorrow",
+    "year": "2022",
+    "rating": 8.5,
+    "description": "A scientist races to prevent a time loop from destroying reality.",
+    "posterUrl": "https://picsum.photos/id/1005/400/600",
+    "backdropUrl": "https://picsum.photos/id/1005/800/450"
+  },
+  {
+    "id": 2,
+    "title": "Solar Drift",
+    "year": "2023",
+    "rating": 7.9,
+    "description": "After Earth's collapse, a crew searches for a new home among the stars.",
+    "posterUrl": "https://picsum.photos/id/1006/400/600",
+    "backdropUrl": "https://picsum.photos/id/1006/800/450"
+  },
+  {
+    "id": 3,
+    "title": "Crimson Night",
+    "year": "2021",
+    "rating": 6.8,
+    "description": "In a dystopian future, vampires rule the night and rebels fight for freedom.",
+    "posterUrl": "https://picsum.photos/id/1008/400/600",
+    "backdropUrl": "https://picsum.photos/id/1008/800/450"
+  },
+  {
+    "id": 4,
+    "title": "Frozen Silence",
+    "year": "2020",
+    "rating": 7.2,
+    "description": "A detective investigates a mysterious death at an isolated Arctic research station.",
+    "posterUrl": "https://picsum.photos/id/1010/400/600",
+    "backdropUrl": "https://picsum.photos/id/1010/800/450"
+  },
+  {
+    "id": 5,
+    "title": "The Last Signal",
+    "year": "2024",
+    "rating": 8.1,
+    "description": "A deep space mission receives a haunting signal from a missing ship.",
+    "posterUrl": "https://picsum.photos/id/1011/400/600",
+    "backdropUrl": "https://picsum.photos/id/1011/800/450"
+  },
+  {
+    "id": 6,
+    "title": "Neon Dreams",
+    "year": "2023",
+    "rating": 7.5,
+    "description": "A hacker discovers an AI trapped in the underworld of a neon metropolis.",
+    "posterUrl": "https://picsum.photos/id/1012/400/600",
+    "backdropUrl": "https://picsum.photos/id/1012/800/450"
+  }
+]

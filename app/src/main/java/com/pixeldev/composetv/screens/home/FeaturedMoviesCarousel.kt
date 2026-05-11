@@ -1,0 +1,273 @@
+/*
+ * Copyright 2023 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.pixeldev.composetv.screens.home
+
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.PlayArrow
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.Saver
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shadow
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import androidx.tv.material3.Button
+import androidx.tv.material3.ButtonDefaults
+import androidx.tv.material3.Carousel
+import androidx.tv.material3.CarouselDefaults
+import androidx.tv.material3.CarouselState
+import androidx.tv.material3.ExperimentalTvMaterial3Api
+import androidx.tv.material3.Icon
+import androidx.tv.material3.MaterialTheme
+import androidx.tv.material3.ShapeDefaults
+import androidx.tv.material3.Text
+import coil.compose.AsyncImage
+import com.pixeldev.composetv.data.remote.response.MovieResponse
+import com.pixeldev.composetv.graph.Screen
+import com.pixeldev.composetv.models.Movies
+import com.pixeldev.composetv.utlis.Constants.Companion.BASE_BACKDROP_IMAGE_URL_780
+
+
+@OptIn(ExperimentalTvMaterial3Api::class)
+val CarouselSaver = Saver<CarouselState, Int>(
+    save = { it.activeItemIndex },
+    restore = { CarouselState(it) }
+)
+
+@OptIn(ExperimentalTvMaterial3Api::class)
+@Composable
+fun FeaturedMoviesCarousel(
+    navHostController: NavHostController,
+    discoveryMovie: MovieResponse?,
+    modifier: Modifier = Modifier
+) {
+    var movieResponse = discoveryMovie!!.results
+    var sliderCount = movieResponse.take(5).size
+    val carouselState = rememberSaveable(saver = CarouselSaver) { CarouselState(0) }
+    var isCarouselFocused by remember { mutableStateOf(false) }
+    val alpha = if (isCarouselFocused) {
+        1f
+    } else {
+        0f
+    }
+
+    Carousel(
+        modifier = modifier
+            .padding(0.dp)//8
+            .border(
+                width = 3.dp,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = alpha),
+                shape = ShapeDefaults.Medium,
+            )
+            .clip(ShapeDefaults.Medium)
+            .onFocusChanged {
+                // Because the carousel itself never gets the focus
+                isCarouselFocused = it.hasFocus
+            }
+            .semantics {
+                contentDescription =
+                    ""
+            },
+        itemCount = sliderCount,
+        carouselState = carouselState,
+        carouselIndicator = {
+            CarouselIndicator(
+                itemCount = sliderCount,
+                activeItemIndex = carouselState.activeItemIndex
+            )
+        },
+        contentTransformStartToEnd = fadeIn(tween(durationMillis = 1000))
+            .togetherWith(fadeOut(tween(durationMillis = 1000))),
+        contentTransformEndToStart = fadeIn(tween(durationMillis = 1000))
+            .togetherWith(fadeOut(tween(durationMillis = 1000))),
+        content = { index ->
+            val movie = movieResponse[index]
+            // background
+            CarouselItemBackground(modifier = Modifier.fillMaxSize(), movie)
+            // foreground
+            CarouselItemForeground(
+                navHostController,
+                movie,
+                isCarouselFocused = isCarouselFocused,
+                modifier = Modifier.fillMaxSize()
+            )
+        }
+    )
+}
+
+@OptIn(ExperimentalTvMaterial3Api::class)
+@Composable
+private fun BoxScope.CarouselIndicator(
+    itemCount: Int,
+    activeItemIndex: Int,
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier = modifier
+            .padding(32.dp)
+            .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
+            .graphicsLayer {
+                clip = true
+                shape = ShapeDefaults.ExtraSmall
+            }
+            .align(Alignment.BottomEnd)
+    ) {
+        CarouselDefaults.IndicatorRow(
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(8.dp),
+            itemCount = itemCount,
+            activeItemIndex = activeItemIndex,
+        )
+    }
+}
+
+@Composable
+private fun CarouselItemForeground(
+    navHostController: NavHostController,
+    movie: Movies,
+    modifier: Modifier = Modifier,
+    isCarouselFocused: Boolean = false
+) {
+    Box(
+        modifier = modifier,
+        contentAlignment = Alignment.BottomStart
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(32.dp),
+            verticalArrangement = Arrangement.Bottom
+        ) {
+            Text(
+                text = movie.title!!,
+                style = MaterialTheme.typography.displayMedium.copy(
+                    /*shadow = Shadow(
+                        color = Color.White.copy(alpha = 0.5f),
+                        offset = Offset(x = 2f, y = 4f),
+                        blurRadius = 2f
+                    )*/
+                ),
+                color = Color.White,
+                maxLines = 1
+            )
+            Text(
+                text = movie.overview.toString(),
+                style = MaterialTheme.typography.titleMedium.copy(
+                    color = MaterialTheme.colorScheme.onSurface.copy(
+                        alpha = 0.65f
+                    ),
+                    shadow = Shadow(
+                        color = Color.Black.copy(alpha = 0.5f),
+                        offset = Offset(x = 2f, y = 4f),
+                        blurRadius = 2f
+                    )
+                ),
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.padding(top = 8.dp)
+            )
+            AnimatedVisibility(
+                visible = isCarouselFocused,
+                content = {
+                    WatchNowButton(onClickMovieCard = {
+                        navHostController.navigate(Screen.MovieDetails.route + "/${movie.id}")
+                    })
+                }
+            )
+        }
+    }
+}
+
+@Composable
+private fun CarouselItemBackground(modifier: Modifier = Modifier, movie: Movies) {
+    AsyncImage(
+        model = BASE_BACKDROP_IMAGE_URL_780 + movie.backdropPath,
+        contentDescription = "",
+        modifier = modifier
+            .drawWithContent {
+                drawContent()
+                drawRect(
+                    Brush.verticalGradient(
+                        colors = listOf(
+                            Color.Transparent,
+                            Color.Black.copy(alpha = 0.5f)
+                        )
+                    )
+                )
+            },
+        contentScale = ContentScale.Crop
+    )
+}
+
+@Composable
+private fun WatchNowButton(onClickMovieCard: () -> Unit) {
+    Button(
+        onClick = { onClickMovieCard() },
+        modifier = Modifier.padding(top = 8.dp),
+        contentPadding = ButtonDefaults.ButtonWithIconContentPadding,
+        shape = ButtonDefaults.shape(shape = CircleShape),
+        colors = ButtonDefaults.colors(
+            containerColor = MaterialTheme.colorScheme.onSurface,
+            contentColor = MaterialTheme.colorScheme.surface,
+            focusedContentColor = MaterialTheme.colorScheme.surface,
+        ),
+        scale = ButtonDefaults.scale(scale = 1f)
+    ) {
+        Icon(
+            imageVector = Icons.Outlined.PlayArrow,
+            contentDescription = null,
+        )
+        Spacer(Modifier.size(8.dp))
+        Text(
+            text = "Watch Now",
+            style = MaterialTheme.typography.titleSmall
+        )
+    }
+}
